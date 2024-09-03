@@ -5,7 +5,6 @@ import com.joshbank.saving.savingaccount.admin.Admin;
 import com.joshbank.saving.savingaccount.transaction.Transaction;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
-
 import java.math.BigDecimal;
 import java.util.List;
 import java.util.UUID;
@@ -17,16 +16,10 @@ public class UserController {
     @Autowired
     private UserService userService;
 
-//    @PostMapping("/add")
-//    private void registerUser(@RequestBody User user){
-//        userService.addUser(user);
-//    }
-
     @PostMapping("/admin")
     public Admin regiseterAdmin(@RequestBody Admin admin){
         return userService.registerAdmin(admin);
     }
-
 
     @PostMapping("/login")
     public User login(@RequestBody User user){

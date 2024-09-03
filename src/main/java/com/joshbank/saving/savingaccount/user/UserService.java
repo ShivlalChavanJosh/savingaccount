@@ -9,10 +9,10 @@ import com.joshbank.saving.savingaccount.utils.TransactionType;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
-
 import java.math.BigDecimal;
 import java.util.List;
 import java.util.UUID;
+
 
 @Service
 public class UserService {
@@ -28,6 +28,12 @@ public class UserService {
 
     @Autowired
     private AdminRepository adminRepository;
+
+
+    public User register(User customer) {
+        customer.setPassword(passwordEncoder.encode(customer.getPassword()));
+        return customerRepository.save(customer);
+    }
 
     public User login(String username, String password) {
         User customer = customerRepository.findByUsername(username)
@@ -76,6 +82,7 @@ public class UserService {
     }
 
     public User withdraw(UUID customerId, BigDecimal amount) {
+
         User customer = customerRepository.findById(customerId)
                 .orElseThrow(() -> new RuntimeException("Customer not found"));
 
