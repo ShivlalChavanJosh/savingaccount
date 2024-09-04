@@ -4,8 +4,10 @@ package com.joshbank.saving.savingaccount.admin;
 import com.joshbank.saving.savingaccount.user.User;
 import com.joshbank.saving.savingaccount.utils.EmailService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
 import java.util.List;
 import java.util.UUID;
 
@@ -22,7 +24,7 @@ public class AdminController {
   }
 
   @PostMapping("/customers")
-  public User createUser(@RequestBody User customer){
+  public User createUser(@Valid @RequestBody User customer){
     return adminService.createCustomer(customer);
   }
 

@@ -5,6 +5,7 @@ import com.joshbank.saving.savingaccount.admin.Admin;
 import com.joshbank.saving.savingaccount.dto.DepositPostRequest;
 import com.joshbank.saving.savingaccount.dto.WithdrawAmountRequest;
 import com.joshbank.saving.savingaccount.transaction.Transaction;
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import java.math.BigDecimal;
@@ -19,7 +20,7 @@ public class UserController {
     private UserService userService;
 
     @PostMapping("/admin")
-    public Admin regiseterAdmin(@RequestBody Admin admin){
+    public Admin regiseterAdmin(@Valid @RequestBody Admin admin){
         return userService.registerAdmin(admin);
     }
 
