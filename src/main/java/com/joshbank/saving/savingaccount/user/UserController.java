@@ -2,6 +2,8 @@ package com.joshbank.saving.savingaccount.user;
 
 
 import com.joshbank.saving.savingaccount.admin.Admin;
+import com.joshbank.saving.savingaccount.dto.DepositPostRequest;
+import com.joshbank.saving.savingaccount.dto.WithdrawAmountRequest;
 import com.joshbank.saving.savingaccount.transaction.Transaction;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -37,17 +39,17 @@ public class UserController {
     }
 
     @PostMapping("/deposit")
-    public User deposit(@RequestParam UUID userid, BigDecimal amount){
-        return userService.deposit(userid,amount);
+    public User deposit(@RequestBody DepositPostRequest request){
+        return userService.deposit(request.getUserId(),request.getAmount());
     }
 
     @PostMapping("/withdraw")
-    public User withdrawAmount(@RequestParam UUID userId,BigDecimal amount){
-        return userService.withdraw(userId,amount);
+    public User withdrawAmount(@RequestBody WithdrawAmountRequest request){
+        return userService.withdraw(request.getUserId(),request.getAmount());
     }
 
-    @GetMapping("/transactions")
-    public List<Transaction> getTransactionHistory(@RequestParam UUID userId){
+    @GetMapping(path = "/transactions/{userId}")
+    public List<Transaction> getTransactionHistory(@PathVariable UUID userId){
         return userService.getTransactionHistory(userId);
     }
 

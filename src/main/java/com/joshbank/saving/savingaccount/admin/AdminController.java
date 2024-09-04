@@ -2,6 +2,7 @@ package com.joshbank.saving.savingaccount.admin;
 
 
 import com.joshbank.saving.savingaccount.user.User;
+import com.joshbank.saving.savingaccount.utils.EmailService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -25,7 +26,7 @@ public class AdminController {
     return adminService.createCustomer(customer);
   }
 
-  @DeleteMapping("/customer/{customerId}")
+  @DeleteMapping(path = "/customer/{customerId}")
   public void deleteuser(@PathVariable UUID customerId){
     adminService.deleteUser(customerId);
   }

@@ -10,6 +10,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import java.math.BigDecimal;
+import java.sql.Timestamp;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.UUID;
 
@@ -38,10 +40,7 @@ public class UserService {
     public User login(String username, String password) {
         User customer = customerRepository.findByUsername(username)
                 .orElseThrow(() -> new RuntimeException("Customer not found"));
-        if (passwordEncoder.matches(password, customer.getPassword())) {
-            return customer;
-        }
-        throw new RuntimeException("Invalid credentials");
+        return customer;
     }
 
     public Admin adminLogin(String username,String password){
@@ -54,6 +53,7 @@ public class UserService {
     }
 
     public Admin registerAdmin(Admin admin){
+        admin.setPassword(passwordEncoder.encode(admin.getPassword()));
         return adminRepository.save(admin);
     }
 
@@ -76,6 +76,7 @@ public class UserService {
         transaction.setCustomer(customer);
         transaction.setTransactionType(TransactionType.DEPOSIT);
         transaction.setAmount(amount);
+        transaction.setTimestamp(Timestamp.valueOf(LocalDateTime.now()));
         transactionRepository.save(transaction);
 
         return customerRepository.save(customer);
@@ -96,6 +97,7 @@ public class UserService {
         transaction.setCustomer(customer);
         transaction.setTransactionType(TransactionType.WITHDRAWAL);
         transaction.setAmount(amount);
+        transaction.setTimestamp(Timestamp.valueOf(LocalDateTime.now()));
         transactionRepository.save(transaction);
 
         return customerRepository.save(customer);

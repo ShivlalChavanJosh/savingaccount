@@ -3,7 +3,11 @@ package com.joshbank.saving.savingaccount.admin;
 
 import com.joshbank.saving.savingaccount.user.User;
 import com.joshbank.saving.savingaccount.user.UserRepository;
+import com.joshbank.saving.savingaccount.utils.EmailService;
+import com.joshbank.saving.savingaccount.utils.EmailUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Lazy;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -18,6 +22,15 @@ public class AdminService {
     @Autowired
     UserRepository userRepository;
 
+    @Autowired
+    private EmailUtils emailUtils;
+
+    private PasswordEncoder passwordEncoder;
+
+    public AdminService(@Lazy PasswordEncoder passwordEncoder) {
+        this.passwordEncoder = passwordEncoder;
+    }
+
     public Admin login(String username, String password){
         Admin admin = adminRepository.findByUsername(username)
                 .orElseThrow(() -> new RuntimeException("Admin not found"));
@@ -25,7 +38,10 @@ public class AdminService {
     }
 
     public User createCustomer(User customer) {
-        return userRepository.save(customer);
+        customer.setPassword(passwordEncoder.encode(customer.getPassword()));
+        User user = userRepository.save(customer);
+        emailUtils.sendUserMail(user);
+        return user;
     }
 
     public List<User> listUsers() {

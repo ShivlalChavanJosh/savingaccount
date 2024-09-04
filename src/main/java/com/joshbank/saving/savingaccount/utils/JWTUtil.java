@@ -1,5 +1,6 @@
 package com.joshbank.saving.savingaccount.utils;
 
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
@@ -10,7 +11,8 @@ import java.util.Date;
 @Component
 public class JWTUtil {
 
-    private String secretKey = "your_secret_key"; // Use a secure key
+    @Value("${jwt.secret}")
+    private String secretKey; // Use a secure key
 
     public String generateToken(UserDetails userDetails) {
         return Jwts.builder()
