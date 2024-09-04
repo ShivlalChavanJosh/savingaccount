@@ -68,6 +68,10 @@ public class UserService {
     }
 
     public User deposit(UUID customerId, BigDecimal amount) {
+        if (amount == null || amount.compareTo(BigDecimal.ZERO) <= 0) {
+            throw new IllegalArgumentException("Deposit amount must be greater than zero.");
+        }
+
         User customer = customerRepository.findById(customerId)
                 .orElseThrow(() -> new RuntimeException("Customer not found"));
         customer.setBalance(customer.getBalance().add(amount));
@@ -83,6 +87,10 @@ public class UserService {
     }
 
     public User withdraw(UUID customerId, BigDecimal amount) {
+
+        if (amount == null || amount.compareTo(BigDecimal.ZERO) <= 0) {
+            throw new IllegalArgumentException("Withdrawal amount must be greater than zero.");
+        }
 
         User customer = customerRepository.findById(customerId)
                 .orElseThrow(() -> new RuntimeException("Customer not found"));

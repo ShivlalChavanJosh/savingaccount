@@ -3,7 +3,6 @@ package com.joshbank.saving.savingaccount.admin;
 
 import com.joshbank.saving.savingaccount.user.User;
 import com.joshbank.saving.savingaccount.user.UserRepository;
-import com.joshbank.saving.savingaccount.utils.EmailService;
 import com.joshbank.saving.savingaccount.utils.EmailUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Lazy;
