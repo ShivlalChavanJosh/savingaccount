@@ -3,6 +3,7 @@ package com.joshbank.saving.savingaccount.admin;
 
 import com.joshbank.saving.savingaccount.user.User;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
@@ -17,12 +18,12 @@ public class AdminController {
   AdminService adminService;
 
   @PostMapping("/login")
-  public Admin login(@RequestBody Admin admin){
+  public ResponseEntity<Admin> login(@RequestBody Admin admin){
       return adminService.login(admin.getUsername(),admin.getPassword());
   }
 
   @PostMapping("/customers")
-  public User createUser(@Valid @RequestBody User customer){
+  public ResponseEntity<User> createUser(@Valid @RequestBody User customer){
     return adminService.createCustomer(customer);
   }
 
@@ -32,7 +33,7 @@ public class AdminController {
   }
 
   @GetMapping("/customers")
-  public List<User> listUsers(){
+  public ResponseEntity<List<User>> listUsers(){
     return adminService.listUsers();
   }
 

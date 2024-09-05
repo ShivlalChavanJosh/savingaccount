@@ -5,14 +5,18 @@ import com.joshbank.saving.savingaccount.admin.Admin;
 import com.joshbank.saving.savingaccount.admin.AdminRepository;
 import com.joshbank.saving.savingaccount.transaction.Transaction;
 import com.joshbank.saving.savingaccount.transaction.TransactionRepository;
+import com.joshbank.saving.savingaccount.utils.CustomerNotFoundException;
 import com.joshbank.saving.savingaccount.utils.TransactionType;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import java.math.BigDecimal;
 import java.sql.Timestamp;
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Map;
 import java.util.UUID;
 
 
@@ -32,15 +36,15 @@ public class UserService {
     private AdminRepository adminRepository;
 
 
-    public User register(User customer) {
+    public ResponseEntity<?> register(User customer) {
         customer.setPassword(passwordEncoder.encode(customer.getPassword()));
-        return customerRepository.save(customer);
+        return ResponseEntity.ok(customerRepository.save(customer));
     }
 
-    public User login(String username, String password) {
+    public ResponseEntity<User> login(String username, String password) {
         User customer = customerRepository.findByUsername(username)
                 .orElseThrow(() -> new RuntimeException("Customer not found"));
-        return customer;
+        return ResponseEntity.ok(customer);
     }
 
     public Admin adminLogin(String username,String password){
@@ -52,24 +56,32 @@ public class UserService {
         throw new RuntimeException("Invalid credentials");
     }
 
-    public Admin registerAdmin(Admin admin){
+    public ResponseEntity<Admin> registerAdmin(Admin admin){
         admin.setPassword(passwordEncoder.encode(admin.getPassword()));
-        return adminRepository.save(admin);
+        return ResponseEntity.ok(adminRepository.save(admin));
     }
 
-    public User updateProfile(UUID customerId, User updatedCustomer) {
+    public ResponseEntity<?> updateProfile(UUID customerId, User updatedCustomer) {
         User customer = customerRepository.findById(customerId)
-                .orElseThrow(() -> new RuntimeException("Customer not found"));
+                .orElse(null);
+
+        if(customer == null){
+            return  ResponseEntity.status(HttpStatus.NOT_FOUND)
+                    .body(Map.of("error", "Customer not found"));
+        }
+
         customer.setFirstName(updatedCustomer.getFirstName());
         customer.setLastName(updatedCustomer.getLastName());
         customer.setAddress(updatedCustomer.getAddress());
         customer.setPhoneNumber(updatedCustomer.getPhoneNumber());
-        return customerRepository.save(customer);
+        return ResponseEntity.ok(customerRepository.save(customer));
     }
 
-    public User deposit(UUID customerId, BigDecimal amount) {
+    public ResponseEntity<?> deposit(UUID customerId, BigDecimal amount) {
         if (amount == null || amount.compareTo(BigDecimal.ZERO) <= 0) {
-            throw new IllegalArgumentException("Deposit amount must be greater than zero.");
+            return ResponseEntity
+                    .status(HttpStatus.BAD_REQUEST)
+                    .body(Map.of("error", "Deposit amount must be greater than zero."));
         }
 
         User customer = customerRepository.findById(customerId)
@@ -83,13 +95,15 @@ public class UserService {
         transaction.setTimestamp(Timestamp.valueOf(LocalDateTime.now()));
         transactionRepository.save(transaction);
 
-        return customerRepository.save(customer);
+        return ResponseEntity.ok(customerRepository.save(customer));
     }
 
-    public User withdraw(UUID customerId, BigDecimal amount) {
+    public ResponseEntity<?> withdraw(UUID customerId, BigDecimal amount) {
 
         if (amount == null || amount.compareTo(BigDecimal.ZERO) <= 0) {
-            throw new IllegalArgumentException("Withdrawal amount must be greater than zero.");
+            return ResponseEntity
+                    .status(HttpStatus.BAD_REQUEST)
+                    .body(Map.of("error", "Withdrawal amount must be greater than zero."));
         }
 
         User customer = customerRepository.findById(customerId)
@@ -108,10 +122,10 @@ public class UserService {
         transaction.setTimestamp(Timestamp.valueOf(LocalDateTime.now()));
         transactionRepository.save(transaction);
 
-        return customerRepository.save(customer);
+        return ResponseEntity.ok(customerRepository.save(customer));
     }
 
-    public List<Transaction> getTransactionHistory(UUID customerId) {
-        return transactionRepository.findByUser_Id(customerId);
+    public ResponseEntity<List<Transaction>> getTransactionHistory(UUID customerId) {
+        return ResponseEntity.ok(transactionRepository.findByUser_Id(customerId));
     }
 }

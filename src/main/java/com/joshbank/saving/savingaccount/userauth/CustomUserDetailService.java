@@ -2,10 +2,7 @@ package com.joshbank.saving.savingaccount.userauth;
 
 import com.joshbank.saving.savingaccount.admin.Admin;
 import com.joshbank.saving.savingaccount.admin.AdminRepository;
-import com.joshbank.saving.savingaccount.user.User;
-import com.joshbank.saving.savingaccount.user.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Primary;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;

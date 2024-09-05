@@ -6,6 +6,7 @@ import com.joshbank.saving.savingaccount.user.UserRepository;
 import com.joshbank.saving.savingaccount.utils.EmailUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Lazy;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -30,21 +31,21 @@ public class AdminService {
         this.passwordEncoder = passwordEncoder;
     }
 
-    public Admin login(String username, String password){
+    public ResponseEntity<Admin> login(String username, String password){
         Admin admin = adminRepository.findByUsername(username)
                 .orElseThrow(() -> new RuntimeException("Admin not found"));
-        return admin;
+        return ResponseEntity.ok(admin);
     }
 
-    public User createCustomer(User customer) {
+    public ResponseEntity<User> createCustomer(User customer) {
         customer.setPassword(passwordEncoder.encode(customer.getPassword()));
         User user = userRepository.save(customer);
         emailUtils.sendUserMail(user);
-        return user;
+        return ResponseEntity.ok(user);
     }
 
-    public List<User> listUsers() {
-        return userRepository.findAll();
+    public ResponseEntity<List<User>> listUsers() {
+        return ResponseEntity.ok(userRepository.findAll());
     }
 
     public void deleteUser(UUID customerId) {
